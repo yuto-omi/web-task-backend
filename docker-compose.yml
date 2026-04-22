@@ -1,0 +1,118 @@
+services:
+  # Serviço Laravel (PHP-FPM)
+  app:
+    user: "${UID}:${GID}"
+    # image: php:8.2-fpm
+    build: ./.infra-dev/php
+    container_name: laravel-app
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - ./.infra-dev/php/php.ini:/usr/local/etc/php/php.ini
+    environment:
+      - TZ=Asia/Tokyo
+      # - XDEBUG_MODE: debug,develop
+      # - XDEBUG_CONFIG: client_host=host.docker.internal client_port=9003 idekey=PHPSTORM
+    depends_on:
+      - mysql
+      - redis
+
+  # Serviço MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: laravel-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laraveluser
+      MYSQL_PASSWORD: secret
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:7-alpine
+    container_name: laravel-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+
+  # Serviço Next.js
+  nextjs:
+    build: ./frontend
+    container_name: next-app
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - app
+
+  # Serviço Nginx
+  nginx:
+    image: nginx:alpine
+    container_name: laravel-nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./.infra-dev/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+      - nextjs
+
+      # Serviço MailHog
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8025:8025"
+
+  # Serviço phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: laravel-phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: laraveluser
+      PMA_PASSWORD: secret
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+  composer:
+    image: composer:2.6
+    container_name: laravel-composer
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - app
+
+  phpredisadmin:
+    image: erikdubbelboer/phpredisadmin
+    container_name: redis-admin
+    environment:
+      - REDIS_1_HOST=redis   
+      - REDIS_1_PORT=6379
+    ports:
+      - "8081:80"            
+    depends_on:
+      - redis
+
+volumes:
+  mysql_data:
+  redis_data:

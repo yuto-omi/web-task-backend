@@ -1,0 +1,20 @@
+includes:
+  - vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+  level: 5
+
+  paths:
+    - app
+    - routes
+    - database
+
+  tmpDir: storage/phpstan
+
+  excludePaths:
+    - vendor
+    - storage
+    - bootstrap/cache
+
+  reportUnmatchedIgnoredErrors: true
+

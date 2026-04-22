@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Button Playground</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0b0b0f;
+  --panel: #111116;
+  --surface: #18181f;
+  --surface2: #21212a;
+  --border: #2a2a35;
+  --border2: #35354a;
+  --text: #e8e8f0;
+  --text-dim: #606070;
+  --text-mid: #9898b0;
+  --accent: #818cf8;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 48px 1fr 90px;
+  overflow: hidden;
+  font-size: 12px;
+}
+
+/* ── HEADER ── */
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--panel);
+}
+header h1 { font-size: 13px; font-weight: 600; letter-spacing: 0.015em; color: var(--text); }
+header .sep { width: 1px; height: 18px; background: var(--border2); }
+header .sub { font-size: 11px; color: var(--text-dim); }
+
+/* ── MAIN ── */
+main { display: grid; grid-template-columns: 1fr 290px; overflow: hidden; }
+
+/* ── PREVIEW ── */
+.preview-area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  overflow: hidden;
+}
+
+#preview-bg {
+  position: absolute;
+  inset: 0;
+  transition: background 0.4s ease;
+}
+
+.preview-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+  padding: 40px;
+}
+
+.preview-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.preview-state-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.preview-state-label {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+/* Background context switcher */
+.bg-switcher {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+.bg-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.bg-swatch:hover { transform: scale(1.15); }
+.bg-swatch.active { border-color: rgba(255,255,255,0.8); }
+
+/* ── CONTROLS ── */
+.controls {
+  border-left: 1px solid var(--border);
+  background: var(--panel);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.controls::-webkit-scrollbar { width: 3px; }
+.controls::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.ctrl-section {
+  padding: 16px 16px 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+}
+.ctrl-section:last-child { border-bottom: none; }
+
+.ctrl-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+/* Style cards */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.style-card {
+  border-radius: 8px;
+  padding: 10px 6px 8px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s;
+}
+.style-card:hover { border-color: var(--border2); background: var(--surface2); }
+.style-card.active { border-color: var(--accent); background: rgba(129,140,248,0.08); }
+
+.style-card-preview {
+  width: 42px;
+  height: 24px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  overflow: hidden;
+  position: relative;
+}
+.style-card-name {
+  font-size: 9.5px;
+  color: var(--text-mid);
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+.style-card.active .style-card-name { color: var(--accent); }
+
+/* Chip group */
+.chip-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip {
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 10.5px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.12s;
+  user-select: none;
+}
+.chip:hover { color: var(--text); border-color: var(--border2); }
+.chip.active { background: rgba(129,140,248,0.1); border-color: var(--accent); color: var(--accent); }
+
+/* Slider */
+.slider-row { display: flex; align-items: center; gap: 10px; }
+.slider-row label { color: var(--text-dim); white-space: nowrap; font-size: 11px; min-width: 60px; }
+.slider-row span { color: var(--text-mid); width: 32px; text-align: right; font-size: 10px; font-family: monospace; }
+input[type=range] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 3px;
+  background: var(--border2);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+/* Text input */
+.text-input {
+  width: 100%;
+  padding: 6px 9px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-size: 11.5px;
+  outline: none;
+  font-family: inherit;
+}
+.text-input:focus { border-color: var(--accent); }
+
+/* Toggle */
+.toggle-row { display: flex; align-items: center; justify-content: space-between; }
+.toggle-label { font-size: 11px; color: var(--text-dim); }
+.toggle {
+  width: 32px; height: 17px;
+  background: var(--border2); border-radius: 9px;
+  cursor: pointer; position: relative; transition: background 0.2s; flex-shrink: 0;
+}
+.toggle.on { background: var(--accent); }
+.toggle::after {
+  content: ''; position: absolute;
+  width: 11px; height: 11px; background: white; border-radius: 50%;
+  top: 3px; left: 3px; transition: left 0.2s;
+}
+.toggle.on::after { left: 18px; }
+
+/* ── FOOTER / OUTPUT ── */
+footer {
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+  padding: 10px 16px;
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 10px;
+  align-items: start;
+  overflow: hidden;
+}
+.output-tag {
+  font-size: 8.5px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--text-dim);
+  padding-top: 3px; display: flex; flex-direction: column; gap: 2px;
+}
+.output-code {
+  font-family: 'Menlo','Monaco','Consolas',monospace;
+  font-size: 10px; color: #a5f3c0; line-height: 1.5;
+  white-space: pre; overflow-x: auto;
+}
+.output-code::-webkit-scrollbar { height: 2px; }
+.output-code::-webkit-scrollbar-thumb { background: var(--border2); }
+.copy-btn {
+  padding: 5px 14px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  color: var(--text-dim); font-size: 10.5px; border-radius: 5px;
+  cursor: pointer; white-space: nowrap; transition: all 0.12s; font-family: inherit;
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn.copied { border-color: #4ade80; color: #4ade80; }
+
+/* ── ANIMATIONS (live in preview) ── */
+@keyframes shimmer-move {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+@keyframes aurora-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: var(--glow-base); }
+  50%       { box-shadow: var(--glow-peak); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Button Playground</h1>
+  <div class="sep"></div>
+  <span class="sub">デザイン性の高いボタンスタイルを探索 → Tailwindコードをコピー</span>
+</header>
+
+<main>
+  <!-- ── PREVIEW ── -->
+  <div class="preview-area">
+    <div id="preview-bg"></div>
+
+    <div class="preview-inner">
+      <div class="preview-buttons">
+        <div class="preview-state-group">
+          <div class="preview-state-label">Normal</div>
+          <button id="btn-main" style="transition: all 0.2s ease;"></button>
+        </div>
+        <div class="preview-state-group">
+          <div class="preview-state-label">Hover</div>
+          <button id="btn-hover" style="pointer-events:none;"></button>
+        </div>
+        <div class="preview-state-group">
+          <div class="preview-state-label">Disabled</div>
+          <button id="btn-disabled" disabled style="pointer-events:none;"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Background context switcher -->
+    <div class="bg-switcher" id="bg-switcher"></div>
+  </div>
+
+  <!-- ── CONTROLS ── -->
+  <div class="controls">
+
+    <!-- Style picker -->
+    <div class="ctrl-section">
+      <div class="ctrl-label">スタイル</div>
+      <div class="style-grid" id="style-grid"></div>
+    </div>
+
+    <!-- Size -->
+    <div class="ctrl-section">
+      <div class="ctrl-label">サイズ</div>
+      <div class="chip-row" id="size-group"></div>
+    </div>
+
+    <!-- Shape -->
+    <div class="ctrl-section">
+      <div class="ctrl-label">形状</div>
+      <div class="chip-row" id="shape-group"></div>
+    </div>
+
+    <!-- Icon -->
+    <div class="ctrl-section">
+      <div class="ctrl-label">アイコン</div>
+      <div class="chip-row" id="icon-group"></div>
+    </div>
+
+    <!-- Uppercase -->
+    <div class="ctrl-section">
+      <div class="toggle-row">
+        <span class="toggle-label">Uppercase</span>
+        <div class="toggle" id="uppercase-toggle"></div>
+      </div>
+    </div>
+
+    <!-- Label -->
+    <div class="ctrl-section">
+      <div class="ctrl-label">テキスト</div>
+      <input type="text" class="text-input" id="label-input" value="はじめる">
+    </div>
+
+  </div>
+</main>
+
+<!-- ── OUTPUT ── -->
+<footer>
+  <div class="output-tag">
+    <span>Tailwind</span>
+    <span style="color:#4b5563; font-weight:400; letter-spacing:0.05em;">+ CSS</span>
+  </div>
+  <code class="output-code" id="output-code"></code>
+  <button class="copy-btn" id="copy-btn">コピー</button>
+</footer>
+
+<script>
+// ================================================================
+// BUTTON STYLES — each has render CSS, hover CSS, preview card, tw output
+// ================================================================
+const BUTTON_STYLES = {
+
+  'gradient-indigo': {
+    name: 'Gradient',
+    cardBg: 'linear-gradient(135deg,#6366f1,#a855f7)',
+    cardColor: '#fff',
+    previewBg: 'radial-gradient(ellipse at 50% 0%, #1a0a3a 0%, #0b0b0f 70%)',
+    css: {
+      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
+      color: '#fff',
+      border: 'none',
+      boxShadow: '0 4px 20px rgba(99,102,241,0.45), inset 0 1px 0 rgba(255,255,255,0.18)',
+    },
+    hoverCss: {
+      boxShadow: '0 8px 32px rgba(99,102,241,0.65), inset 0 1px 0 rgba(255,255,255,0.22)',
+      transform: 'translateY(-2px)',
+    },
+    disabledCss: { opacity: 0.45 },
+    tw: `bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-600
+text-white border-none font-semibold
+shadow-[0_4px_20px_rgba(99,102,241,0.45)]
+hover:shadow-[0_8px_32px_rgba(99,102,241,0.65)]
+hover:-translate-y-0.5 transition-all duration-200`,
+  },
+
+  'gradient-sunrise': {
+    name: 'Sunrise',
+    cardBg: 'linear-gradient(135deg,#f97316,#ec4899)',
+    cardColor: '#fff',
+    previewBg: 'radial-gradient(ellipse at 50% 0%, #2a0a1a 0%, #0b0b0f 70%)',
+    css: {
+      background: 'linear-gradient(135deg, #f97316 0%, #ef4444 50%, #ec4899 100%)',
+      color: '#fff',
+      border: 'none',
+      boxShadow: '0 4px 20px rgba(249,115,22,0.45), inset 0 1px 0 rgba(255,255,255,0.18)',
+    },
+    hoverCss: {
+      boxShadow: '0 8px 32px rgba(249,115,22,0.6), inset 0 1px 0 rgba(255,255,255,0.22)',
+      transform: 'translateY(-2px)',
+    },
+    disabledCss: { opacity: 0.45 },
+    tw: `bg-gradient-to-br from-orange-500 via-red-500 to-pink-500
+text-white border-none font-semibold
+shadow-[0_4px_20px_rgba(249,115,22,0.45)]
+hover:shadow-[0_8px_32px_rgba(249,115,22,0.6)]
+hover:-translate-y-0.5 transition-all duration-200`,
+  },
+
+  'neon-cyan': {
+    name: 'Neon',
+    cardBg: '#050510',
+    cardColor: '#22d3ee',
+    cardBorder: '1.5px solid #22d3ee',
+    cardShadow: '0 0 10px rgba(34,211,238,0.5)',
+    previewBg: 'radial-gradient(ellipse at 50% 50%, #030312 0%, #050510 100%)',
+    css: {
+      background: 'transparent',
+      color: '#22d3ee',
+      border: '1.5px solid #22d3ee',
+      boxShadow: '0 0 14px rgba(34,211,238,0.35), inset 0 0 14px rgba(34,211,238,0.05)',
+      textShadow: '0 0 10px rgba(34,211,238,0.7)',
+    },
+    hoverCss: {
+      boxShadow: '0 0 28px rgba(34,211,238,0.7), inset 0 0 28px rgba(34,211,238,0.08)',
+      background: 'rgba(34,211,238,0.06)',
+    },
+    disabledCss: { opacity: 0.3 },
+    tw: `bg-transparent text-cyan-400 border border-cyan-400 font-semibold
+shadow-[0_0_14px_rgba(34,211,238,0.35),inset_0_0_14px_rgba(34,211,238,0.05)]
+hover:shadow-[0_0_28px_rgba(34,211,238,0.7)]
+hover:bg-cyan-400/5 transition-all duration-200`,
+    extraCss: `text-shadow: 0 0 10px rgba(34,211,238,0.7);`,
+  },
+
+  'neon-pink': {
+    name: 'Neon Pink',
+    cardBg: '#0f0510',
+    cardColor: '#f472b6',
+    cardBorder: '1.5px solid #f472b6',
+    cardShadow: '0 0 10px rgba(244,114,182,0.5)',
+    previewBg: 'radial-gradient(ellipse at 50% 50%, #120510 0%, #0a050f 100%)',
+    css: {
+      background: 'transparent',
+      color: '#f472b6',
+      border: '1.5px solid #f472b6',
+      boxShadow: '0 0 14px rgba(244,114,182,0.35), inset 0 0 14px rgba(244,114,182,0.05)',
+      textShadow: '0 0 10px rgba(244,114,182,0.7)',
+    },
+    hoverCss: {
+      boxShadow: '0 0 28px rgba(244,114,182,0.7), inset 0 0 28px rgba(244,114,182,0.08)',
+      background: 'rgba(244,114,182,0.06)',
+    },
+    disabledCss: { opacity: 0.3 },
+    tw: `bg-transparent text-pink-400 border border-pink-400 font-semibold
+shadow-[0_0_14px_rgba(244,114,182,0.35)]
+hover:shadow-[0_0_28px_rgba(244,114,182,0.7)]
+hover:bg-pink-400/5 transition-all duration-200`,
+    extraCss: `text-shadow: 0 0 10px rgba(244,114,182,0.7);`,
+  },
+
+  'glass-light': {
+    name: 'Glass',
+    cardBg: 'rgba(255,255,255,0.18)',
+    cardColor: '#fff',
+    cardBorder: '1px solid rgba(255,255,255,0.3)',
+    previewBg: 'linear-gradient(135deg, #667eea 0%, #764ba2 40%, #f093fb 100%)',
+    css: {
+      background: 'rgba(255,255,255,0.18)',
+      color: '#fff',
+      border: '1px solid rgba(255,255,255,0.3)',
+      boxShadow: '0 4px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.2)',
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
+    },
+    hoverCss: {
+      background: 'rgba(255,255,255,0.26)',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.25)',
+    },
+    disabledCss: { opacity: 0.4 },
+    tw: `bg-white/[0.18] text-white border border-white/30 font-semibold
+backdrop-blur-md
+shadow-[0_4px_24px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.2)]
+hover:bg-white/[0.26]
+hover:shadow-[0_8px_32px_rgba(0,0,0,0.18)] transition-all duration-200`,
+  },
+
+  'glass-dark': {
+    name: 'Dark Glass',
+    cardBg: 'rgba(0,0,0,0.4)',
+    cardColor: 'rgba(255,255,255,0.85)',
+    cardBorder: '1px solid rgba(255,255,255,0.1)',
+    previewBg: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+    css: {
+      background: 'rgba(0,0,0,0.35)',
+      color: 'rgba(255,255,255,0.88)',
+      border: '1px solid rgba(255,255,255,0.12)',
+      boxShadow: '0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)',
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
+    },
+    hoverCss: {
+      background: 'rgba(0,0,0,0.5)',
+      border: '1px solid rgba(255,255,255,0.2)',
+    },
+    disabledCss: { opacity: 0.4 },
+    tw: `bg-black/35 text-white/90 border border-white/[0.12] font-semibold
+backdrop-blur-md
+shadow-[0_4px_24px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.08)]
+hover:bg-black/50 hover:border-white/20 transition-all duration-200`,
+  },
+
+  '3d-press': {
+    name: '3D Press',
+    cardBg: '#4f46e5',
+    cardColor: '#fff',
+    cardShadow: '0 5px 0 #3730a3',
+    previewBg: 'radial-gradient(ellipse at 50% 100%, #e8e8f8 0%, #f5f5ff 100%)',
+    css: {
+      background: '#4f46e5',
+      color: '#fff',
+      border: 'none',
+      boxShadow: '0 6px 0 #3730a3, 0 8px 8px rgba(0,0,0,0.25)',
+      transform: 'translateY(0)',
+    },
+    hoverCss: {
+      boxShadow: '0 4px 0 #3730a3, 0 6px 6px rgba(0,0,0,0.2)',
+      transform: 'translateY(2px)',
+    },
+    disabledCss: {
+      opacity: 0.5,
+      boxShadow: '0 3px 0 #9ca3af',
+      background: '#9ca3af',
+    },
+    tw: `bg-indigo-600 text-white border-none font-bold
+shadow-[0_6px_0_#3730a3,0_8px_8px_rgba(0,0,0,0.25)]
+hover:shadow-[0_4px_0_#3730a3,0_6px_6px_rgba(0,0,0,0.2)]
+hover:translate-y-0.5 active:translate-y-1.5 active:shadow-none
+transition-all duration-100`,
+  },
+
+  'offset-brutal': {
+    name: 'Offset',
+    cardBg: '#facc15',
+    cardColor: '#000',
+    cardBorder: '2px solid #000',
+    cardShadow: '3px 3px 0 #000',
+    previewBg: '#f0f0e8',
+    css: {
+      background: '#facc15',
+      color: '#000',
+      border: '2px solid #000',
+      boxShadow: '5px 5px 0 #000',
+      transform: 'translate(0,0)',
+    },
+    hoverCss: {
+      boxShadow: '2px 2px 0 #000',
+      transform: 'translate(3px, 3px)',
+    },
+    disabledCss: {
+      opacity: 0.5,
+      boxShadow: '2px 2px 0 #888',
+      background: '#fef08a',
+    },
+    tw: `bg-yellow-400 text-black border-2 border-black font-bold
+shadow-[5px_5px_0_#000]
+hover:shadow-[2px_2px_0_#000] hover:translate-x-[3px] hover:translate-y-[3px]
+transition-all duration-100`,
+  },
+
+  'shimmer': {
+    name: 'Shimmer',
+    cardBg: 'linear-gradient(110deg,#1a1a3e 30%,#4a4aae 50%,#1a1a3e 70%)',
+    cardColor: '#c7d2fe',
+    cardBgSize: '200% 100%',
+    previewBg: '#0a0a14',
+    css: {
+      background: 'linear-gradient(110deg, #1a1a3e 30%, #5b5bce 45%, #8b8bff 50%, #5b5bce 55%, #1a1a3e 70%)',
+      backgroundSize: '250% 100%',
+      color: '#c7d2fe',
+      border: '1px solid rgba(167,139,250,0.25)',
+      boxShadow: '0 4px 20px rgba(99,102,241,0.2)',
+      animation: 'shimmer-move 2.5s linear infinite',
+    },
+    hoverCss: {
+      boxShadow: '0 4px 28px rgba(99,102,241,0.4)',
+      animationDuration: '1.5s',
+    },
+    disabledCss: { opacity: 0.4, animationPlayState: 'paused' },
+    tw: `text-indigo-200 border border-indigo-400/25 font-semibold
+bg-[linear-gradient(110deg,#1a1a3e_30%,#5b5bce_45%,#8b8bff_50%,#5b5bce_55%,#1a1a3e_70%)]
+bg-[length:250%_100%]
+shadow-[0_4px_20px_rgba(99,102,241,0.2)]
+hover:shadow-[0_4px_28px_rgba(99,102,241,0.4)]
+transition-shadow duration-200`,
+    extraCss: `animation: shimmer-move 2.5s linear infinite;`,
+  },
+
+  'soft-mint': {
+    name: 'Soft',
+    cardBg: '#d1fae5',
+    cardColor: '#065f46',
+    previewBg: 'linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%)',
+    css: {
+      background: '#d1fae5',
+      color: '#065f46',
+      border: '1px solid #a7f3d0',
+      boxShadow: '0 2px 8px rgba(16,185,129,0.12), inset 0 1px 0 rgba(255,255,255,0.5)',
+    },
+    hoverCss: {
+      background: '#a7f3d0',
+      boxShadow: '0 4px 14px rgba(16,185,129,0.2), inset 0 1px 0 rgba(255,255,255,0.6)',
+    },
+    disabledCss: { opacity: 0.45 },
+    tw: `bg-emerald-100 text-emerald-900 border border-emerald-200 font-semibold
+shadow-[0_2px_8px_rgba(16,185,129,0.12),inset_0_1px_0_rgba(255,255,255,0.5)]
+hover:bg-emerald-200 hover:shadow-[0_4px_14px_rgba(16,185,129,0.2)]
+transition-all duration-200`,
+  },
+
+};
+
+// ================================================================
+// SIZES
+// ================================================================
+const SIZES = {
+  sm: { label:'SM', padding:'8px 14px',  fontSize:'13px', gap:'5px' },
+  md: { label:'MD', padding:'11px 20px', fontSize:'14px', gap:'6px' },
+  lg: { label:'LG', padding:'14px 26px', fontSize:'16px', gap:'7px' },
+  xl: { label:'XL', padding:'17px 32px', fontSize:'18px', gap:'8px' },
+};
+const SHAPES = {
+  sharp:   { label:'角なし', radius:'0' },
+  sm:      { label:'小',     radius:'4px' },
+  md:      { label:'中',     radius:'8px' },
+  lg:      { label:'大',     radius:'12px' },
+  pill:    { label:'ピル',   radius:'9999px' },
+};
+const ICONS = {
+  none: { label:'なし', pos:null, svg:'', name:'' },
+  'arrow-right': {
+    label:'→', pos:'right',
+    svg:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`,
+    name:'ArrowRight',
+  },
+  'plus': {
+    label:'+', pos:'left',
+    svg:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>`,
+    name:'Plus',
+  },
+  'check': {
+    label:'✓', pos:'left',
+    svg:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    name:'Check',
+  },
+  'star': {
+    label:'★', pos:'left',
+    svg:`<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    name:'Star',
+  },
+};
+
+// Background contexts
+const BG_CONTEXTS = [
+  { color:'#0b0b0f', label:'Dark' },
+  { color:'#ffffff', label:'White' },
+  { color:'#f3f4f6', label:'Gray' },
+  { color:'linear-gradient(135deg,#667eea,#764ba2)', label:'Gradient' },
+];
+
+// ================================================================
+// STATE
+// ================================================================
+const state = {
+  style: 'gradient-indigo',
+  size: 'md',
+  shape: 'md',
+  icon: 'none',
+  uppercase: false,
+  label: 'はじめる',
+  bgIndex: 0,
+};
+
+// ================================================================
+// RENDER
+// ================================================================
+function buildContent() {
+  const icon = ICONS[state.icon];
+  const lbl = state.uppercase ? state.label.toUpperCase() : state.label;
+  if (icon.pos === 'left')  return icon.svg + lbl;
+  if (icon.pos === 'right') return lbl + icon.svg;
+  return lbl;
+}
+
+function applyToBtn(btn, extra = {}) {
+  const style = BUTTON_STYLES[state.style];
+  const size  = SIZES[state.size];
+  const shape = SHAPES[state.shape];
+
+  const computed = {
+    ...style.css,
+    ...extra,
+    padding:         size.padding,
+    fontSize:        size.fontSize,
+    borderRadius:    shape.radius,
+    display:         'inline-flex',
+    alignItems:      'center',
+    justifyContent:  'center',
+    gap:             size.gap,
+    cursor:          'pointer',
+    fontFamily:      'system-ui,-apple-system,sans-serif',
+    fontWeight:      '600',
+    letterSpacing:   state.uppercase ? '0.07em' : '0.01em',
+    textTransform:   state.uppercase ? 'uppercase' : 'none',
+    lineHeight:      '1.2',
+    textDecoration:  'none',
+    outline:         'none',
+    userSelect:      'none',
+  };
+
+  // Remove transition from non-hover buttons in preview
+  if (!extra.transition) computed.transition = 'none';
+
+  Object.keys(computed).forEach(k => {
+    btn.style[k] = computed[k] ?? '';
+  });
+  btn.innerHTML = buildContent();
+}
+
+function renderPreview() {
+  const style = BUTTON_STYLES[state.style];
+
+  applyToBtn(document.getElementById('btn-main'), { transition: 'all 0.2s ease' });
+  applyToBtn(document.getElementById('btn-hover'), { ...style.hoverCss });
+  applyToBtn(document.getElementById('btn-disabled'), { ...style.disabledCss, cursor:'not-allowed' });
+
+  // Preview background
+  document.getElementById('preview-bg').style.background =
+    style.previewBg || '#0b0b0f';
+}
+
+function buildOutput() {
+  const style = BUTTON_STYLES[state.style];
+  const sz    = SIZES[state.size];
+  const sh    = SHAPES[state.shape];
+  const icon  = ICONS[state.icon];
+
+  // Build tw string (simplified)
+  let tw = style.tw.trim().replace(/\n+/g, ' ').replace(/\s+/g, ' ');
+
+  // Inject size + shape into tw if they differ from base
+  // (sizes & shapes handled separately as they're orthogonal)
+  const sizeClass = {
+    sm: 'px-3.5 py-2 text-sm',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-6 py-3.5 text-base',
+    xl: 'px-8 py-4 text-lg',
+  }[state.size];
+  const shapeClass = {
+    sharp:'rounded-none', sm:'rounded', md:'rounded-lg',
+    lg:'rounded-xl', pill:'rounded-full',
+  }[state.shape];
+
+  tw = `inline-flex items-center justify-center gap-1.5 ${sizeClass} ${shapeClass} ${state.uppercase ? 'uppercase tracking-wider ' : ''}${tw}`;
+
+  let iconImport = icon.name ? `import { ${icon.name} } from 'lucide-react';\n\n` : '';
+
+  let children = '';
+  if (icon.pos === 'left')  children = `\n      <${icon.name} size={16} />\n      ${state.label}\n    `;
+  else if (icon.pos === 'right') children = `\n      ${state.label}\n      <${icon.name} size={16} />\n    `;
+  else children = state.label;
+
+  let extra = style.extraCss ? `\n/* Extra CSS */\n.btn { ${style.extraCss} }` : '';
+
+  return `${iconImport}<button className="${tw}">\n  ${children}</button>${extra}`;
+}
+
+function updateAll() {
+  renderPreview();
+  document.getElementById('output-code').textContent = buildOutput();
+  syncActiveStyle();
+  syncActiveBg();
+}
+
+// ================================================================
+// CONTROLS
+// ================================================================
+
+// Style cards
+function buildStyleCards() {
+  const grid = document.getElementById('style-grid');
+  Object.entries(BUTTON_STYLES).forEach(([key, s]) => {
+    const card = document.createElement('div');
+    card.className = 'style-card' + (state.style === key ? ' active' : '');
+    card.dataset.key = key;
+
+    const preview = document.createElement('div');
+    preview.className = 'style-card-preview';
+    Object.assign(preview.style, {
+      background:    s.cardBg || '#fff',
+      color:         s.cardColor || '#000',
+      border:        s.cardBorder || 'none',
+      boxShadow:     s.cardShadow || 'none',
+      borderRadius:  '4px',
+      backgroundSize: s.cardBgSize || 'auto',
+    });
+    preview.textContent = 'Aa';
+
+    const name = document.createElement('div');
+    name.className = 'style-card-name';
+    name.textContent = s.name;
+
+    card.appendChild(preview);
+    card.appendChild(name);
+    card.addEventListener('click', () => {
+      state.style = key;
+      grid.querySelectorAll('.style-card').forEach(c => c.classList.toggle('active', c.dataset.key === key));
+      updateAll();
+    });
+    grid.appendChild(card);
+  });
+}
+
+function syncActiveStyle() {
+  document.querySelectorAll('.style-card').forEach(c => {
+    c.classList.toggle('active', c.dataset.key === state.style);
+  });
+}
+
+function makeChipGroup(id, map, stateKey) {
+  const container = document.getElementById(id);
+  Object.entries(map).forEach(([key, cfg]) => {
+    const el = document.createElement('div');
+    el.className = 'chip' + (state[stateKey] === key ? ' active' : '');
+    el.textContent = cfg.label;
+    el.dataset.value = key;
+    el.addEventListener('click', () => {
+      state[stateKey] = key;
+      container.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.value === key));
+      updateAll();
+    });
+    container.appendChild(el);
+  });
+}
+
+// Background switcher
+function buildBgSwitcher() {
+  const switcher = document.getElementById('bg-switcher');
+  BG_CONTEXTS.forEach((bg, i) => {
+    const swatch = document.createElement('div');
+    swatch.className = 'bg-swatch' + (i === 0 ? ' active' : '');
+    swatch.style.background = bg.color;
+    swatch.style.border = '2px solid rgba(255,255,255,0.2)';
+    swatch.title = bg.label;
+    swatch.addEventListener('click', () => {
+      state.bgIndex = i;
+      syncActiveBg();
+      // Don't override style's natural preview bg — only override on manual pick
+    });
+    switcher.appendChild(swatch);
+  });
+}
+
+function syncActiveBg() {
+  // bg switcher just shows active state; preview bg comes from style
+  document.querySelectorAll('.bg-swatch').forEach((s, i) => {
+    s.classList.toggle('active', i === state.bgIndex);
+  });
+}
+
+function init() {
+  buildStyleCards();
+  makeChipGroup('size-group',  SIZES,  'size');
+  makeChipGroup('shape-group', SHAPES, 'shape');
+  makeChipGroup('icon-group',  ICONS,  'icon');
+  buildBgSwitcher();
+
+  // Uppercase toggle
+  const toggle = document.getElementById('uppercase-toggle');
+  toggle.classList.toggle('on', state.uppercase);
+  toggle.addEventListener('click', () => {
+    state.uppercase = !state.uppercase;
+    toggle.classList.toggle('on', state.uppercase);
+    updateAll();
+  });
+
+  // Label
+  document.getElementById('label-input').addEventListener('input', e => {
+    state.label = e.target.value || 'ボタン';
+    updateAll();
+  });
+
+  // Copy
+  const copyBtn = document.getElementById('copy-btn');
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(document.getElementById('output-code').textContent).then(() => {
+      copyBtn.textContent = 'コピー済 ✓';
+      copyBtn.classList.add('copied');
+      setTimeout(() => { copyBtn.textContent = 'コピー'; copyBtn.classList.remove('copied'); }, 2000);
+    });
+  });
+
+  updateAll();
+}
+
+init();
+</script>
+</body>
+</html>

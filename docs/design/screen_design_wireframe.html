@@ -1,0 +1,373 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:13px;color:var(--color-text-primary);background:var(--color-background-tertiary)}
+.shell{display:flex;height:100vh;min-height:700px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;background:var(--color-background-tertiary)}
+.nav{width:200px;min-width:200px;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column}
+.nav-logo{padding:16px 14px 12px;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.nav-logo span{font-size:11px;color:var(--color-text-tertiary);display:block;font-weight:400;margin-top:1px}
+.nav-section{padding:10px 8px 4px;font-size:10px;color:var(--color-text-tertiary);letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;margin:1px 6px;border-radius:var(--border-radius-md);cursor:pointer;font-size:12px;color:var(--color-text-secondary);border:0.5px solid transparent}
+.nav-item:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.nav-item.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-tertiary)}
+.nav-icon{width:14px;height:14px;flex-shrink:0;opacity:.6}
+.nav-item.active .nav-icon{opacity:1}
+.nav-bottom{margin-top:auto;padding:10px 8px;border-top:0.5px solid var(--color-border-tertiary)}
+.avatar{width:26px;height:26px;border-radius:50%;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#0C447C;flex-shrink:0}
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:500;flex:1}
+.content{padding:20px;flex:1}
+.btn{padding:5px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:12px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary)}
+.btn-primary:hover{opacity:.82}
+.btn-ai{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
+.badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:500}
+.badge-todo{background:#F1EFE8;color:#444441}
+.badge-wip{background:#FAEEDA;color:#633806}
+.badge-review{background:#EEEDFE;color:#3C3489}
+.badge-done{background:#EAF3DE;color:#27500A}
+.badge-high{background:#FCEBEB;color:#791F1F}
+.badge-mid{background:#FAEEDA;color:#633806}
+.badge-low{background:#F1EFE8;color:#444441}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 16px;margin-bottom:10px}
+.metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px}
+.metric-label{font-size:11px;color:var(--color-text-tertiary);margin-bottom:4px}
+.metric-val{font-size:22px;font-weight:500}
+.metric-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.progress-bar{height:4px;background:var(--color-background-tertiary);border-radius:2px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;border-radius:2px}
+.table{width:100%;border-collapse:collapse;font-size:12px}
+.table th{text-align:left;padding:7px 10px;font-size:11px;color:var(--color-text-tertiary);font-weight:500;border-bottom:0.5px solid var(--color-border-tertiary)}
+.table td{padding:9px 10px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.table td:first-child{color:var(--color-text-primary);font-weight:500}
+.table tr:last-child td{border-bottom:none}
+.table tr:hover td{background:var(--color-background-secondary)}
+.task-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.task-row:last-child{border-bottom:none}
+.check{width:14px;height:14px;border:0.5px solid var(--color-border-secondary);border-radius:3px;flex-shrink:0}
+.check.done{background:var(--color-text-success);border-color:var(--color-text-success)}
+.task-name{flex:1;font-size:13px}
+.task-name.done{text-decoration:line-through;color:var(--color-text-tertiary)}
+.ai-panel{background:#EEEDFE;border-radius:var(--border-radius-lg);padding:14px 16px;margin-bottom:14px;border:0.5px solid #AFA9EC}
+.ai-title{font-size:12px;font-weight:500;color:#3C3489;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ai-item{font-size:12px;color:#534AB7;padding:4px 0;border-bottom:0.5px solid #CECBF6;display:flex;align-items:center;gap:6px}
+.ai-item:last-child{border-bottom:none}
+.section-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.section-head h2{font-size:14px;font-weight:500;flex:1}
+.tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:11px;background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)}
+.two-col{display:grid;grid-template-columns:1fr 320px;gap:14px;align-items:start}
+.screen{display:none}
+.screen.active{display:block}
+</style>
+
+<div class="shell">
+  <div class="nav">
+    <div class="nav-logo">WebTask<span>チーム管理</span></div>
+    <div class="nav-section">メイン</div>
+    <div class="nav-item active" onclick="show('dashboard',this)">
+      <svg class="nav-icon" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" fill="currentColor"/><rect x="8" y="1" width="5" height="5" rx="1" fill="currentColor"/><rect x="1" y="8" width="5" height="5" rx="1" fill="currentColor"/><rect x="8" y="8" width="5" height="5" rx="1" fill="currentColor"/></svg>
+      ダッシュボード
+    </div>
+    <div class="nav-item" onclick="show('projects',this)">
+      <svg class="nav-icon" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="2" rx="1" fill="currentColor"/><rect x="1" y="6" width="9" height="2" rx="1" fill="currentColor"/><rect x="1" y="10" width="11" height="2" rx="1" fill="currentColor"/></svg>
+      プロジェクト一覧
+    </div>
+    <div class="nav-item" onclick="show('project-detail',this)">
+      <svg class="nav-icon" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/><rect x="4" y="4" width="6" height="1" rx=".5" fill="currentColor"/><rect x="4" y="6.5" width="4" height="1" rx=".5" fill="currentColor"/></svg>
+      プロジェクト詳細
+    </div>
+    <div class="nav-item" onclick="show('mypage',this)">
+      <svg class="nav-icon" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1" fill="none"/><path d="M2 12c0-2.761 2.239-4 5-4s5 1.239 5 4" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+      マイページ
+    </div>
+    <div class="nav-item" onclick="show('report',this)">
+      <svg class="nav-icon" viewBox="0 0 14 14" fill="none"><rect x="1" y="8" width="3" height="5" rx=".5" fill="currentColor"/><rect x="5.5" y="5" width="3" height="8" rx=".5" fill="currentColor"/><rect x="10" y="2" width="3" height="11" rx=".5" fill="currentColor"/></svg>
+      工数レポート
+    </div>
+    <div class="nav-bottom">
+      <div class="nav-item" style="gap:8px">
+        <div class="avatar">近江</div>
+        <span style="font-size:12px">近江 裕人</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div id="dashboard" class="screen active">
+      <div class="topbar">
+        <div class="topbar-title">ダッシュボード</div>
+        <button class="btn btn-ai" style="font-size:12px">✦ AIサマリー</button>
+      </div>
+      <div class="content">
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-label">進行中の案件</div><div class="metric-val">8</div><div class="metric-sub">2件が納期7日以内</div></div>
+          <div class="metric"><div class="metric-label">自分のタスク</div><div class="metric-val">12</div><div class="metric-sub">未着手 4 / 進行中 8</div></div>
+          <div class="metric"><div class="metric-label">今週の工数</div><div class="metric-val">18.5h</div><div class="metric-sub">見積もり 24h</div></div>
+          <div class="metric"><div class="metric-label">完了タスク(今月)</div><div class="metric-val">34</div><div class="metric-sub">先月比 +6</div></div>
+        </div>
+
+        <div class="ai-panel">
+          <div class="ai-title">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#534AB7" stroke-width="1"/><path d="M5 7l1.5 1.5L9.5 5" stroke="#534AB7" stroke-width="1" stroke-linecap="round"/></svg>
+            AI からの提案
+          </div>
+          <div class="ai-item">「株式会社〇〇 コーポレートサイト」の納期まで3日。テスト工程が未完了のタスクが4件あります。</div>
+          <div class="ai-item">「△△ ECサイト」のコーディング工数が見積もりを12h超過しています。担当者と確認を。</div>
+          <div class="ai-item">今日のおすすめタスク：「LP実装 - ヒーロー section」（優先度高・期日明日）</div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <div class="section-head"><h2>進行中のプロジェクト</h2><button class="btn" style="font-size:11px">すべて見る</button></div>
+            <div class="card" style="padding:0">
+              <table class="table">
+                <thead><tr><th>プロジェクト名</th><th>納期</th><th>進捗</th><th>担当</th></tr></thead>
+                <tbody>
+                  <tr><td>株式会社〇〇 コーポレート</td><td style="color:#791F1F">4/10</td><td><div style="display:flex;align-items:center;gap:6px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:78%;background:#1D9E75"></div></div><span style="font-size:11px;color:var(--color-text-secondary)">78%</span></div></td><td><div class="avatar" style="width:20px;height:20px;font-size:9px">近江</div></td></tr>
+                  <tr><td>△△ ECサイト リニューアル</td><td>4/25</td><td><div style="display:flex;align-items:center;gap:6px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:45%;background:#378ADD"></div></div><span style="font-size:11px;color:var(--color-text-secondary)">45%</span></div></td><td><div class="avatar" style="width:20px;height:20px;font-size:9px">田中</div></td></tr>
+                  <tr><td>□□クリニック LP制作</td><td>5/15</td><td><div style="display:flex;align-items:center;gap:6px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:20%;background:#378ADD"></div></div><span style="font-size:11px;color:var(--color-text-secondary)">20%</span></div></td><td><div class="avatar" style="width:20px;height:20px;font-size:9px">佐藤</div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="section-head"><h2>自分の直近タスク</h2></div>
+            <div class="card">
+              <div class="task-row"><div class="check done"></div><div class="task-name done">ワイヤーフレーム確認・修正</div><span class="badge badge-done" style="font-size:10px">完了</span></div>
+              <div class="task-row"><div class="check"></div><div class="task-name">LP実装 - ヒーローsection</div><span class="badge badge-wip" style="font-size:10px">進行中</span></div>
+              <div class="task-row"><div class="check"></div><div class="task-name">表示速度テスト</div><span class="badge badge-todo" style="font-size:10px">未着手</span></div>
+              <div class="task-row"><div class="check"></div><div class="task-name">クライアント向け納品物確認</div><span class="badge badge-todo" style="font-size:10px">未着手</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="projects" class="screen">
+      <div class="topbar">
+        <div class="topbar-title">プロジェクト一覧</div>
+        <button class="btn" style="font-size:12px;margin-right:6px">フィルタ</button>
+        <button class="btn btn-primary" style="font-size:12px">+ 新規プロジェクト</button>
+      </div>
+      <div class="content">
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <span class="badge" style="background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);color:var(--color-text-primary);cursor:pointer;padding:4px 12px">すべて (12)</span>
+          <span class="badge" style="background:#FAEEDA;color:#633806;cursor:pointer;padding:4px 12px">進行中 (8)</span>
+          <span class="badge" style="background:#F1EFE8;color:#444441;cursor:pointer;padding:4px 12px">受注 (2)</span>
+          <span class="badge" style="background:#EAF3DE;color:#27500A;cursor:pointer;padding:4px 12px">納品済 (2)</span>
+        </div>
+        <div class="card" style="padding:0">
+          <table class="table">
+            <thead><tr><th style="width:30%">プロジェクト名</th><th>クライアント</th><th>ステータス</th><th>納期</th><th>進捗</th><th>見積工数</th><th>実績工数</th><th>担当</th></tr></thead>
+            <tbody>
+              <tr onclick="show('project-detail',document.querySelectorAll('.nav-item')[2])" style="cursor:pointer">
+                <td>コーポレートサイト制作</td><td style="color:var(--color-text-secondary)">株式会社〇〇</td><td><span class="badge badge-wip">進行中</span></td><td style="color:#791F1F;font-weight:500">4/10</td>
+                <td><div style="display:flex;align-items:center;gap:6px"><div class="progress-bar" style="width:60px"><div class="progress-fill" style="width:78%;background:#1D9E75"></div></div>78%</div></td>
+                <td>40h</td><td style="color:#791F1F">47h</td><td><div class="avatar" style="width:20px;height:20px;font-size:9px">近江</div></td>
+              </tr>
+              <tr><td>ECサイト リニューアル</td><td style="color:var(--color-text-secondary)">△△株式会社</td><td><span class="badge badge-wip">進行中</span></td><td>4/25</td>
+                <td><div style="display:flex;align-items:center;gap:6px"><div class="progress-bar" style="width:60px"><div class="progress-fill" style="width:45%;background:#378ADD"></div></div>45%</div></td>
+                <td>80h</td><td>36h</td><td><div class="avatar" style="width:20px;height:20px;font-size:9px">田中</div></td>
+              </tr>
+              <tr><td>□□クリニック LP</td><td style="color:var(--color-text-secondary)">□□クリニック</td><td><span class="badge badge-wip">進行中</span></td><td>5/15</td>
+                <td><div style="display:flex;align-items:center;gap:6px"><div class="progress-bar" style="width:60px"><div class="progress-fill" style="width:20%;background:#378ADD"></div></div>20%</div></td>
+                <td>30h</td><td>6h</td><td><div class="avatar" style="width:20px;height:20px;font-size:9px">佐藤</div></td>
+              </tr>
+              <tr><td>採用サイト 新規制作</td><td style="color:var(--color-text-secondary)">◇◇工業</td><td><span class="badge badge-todo">受注</span></td><td>6/30</td>
+                <td><div style="display:flex;align-items:center;gap:6px"><div class="progress-bar" style="width:60px"><div class="progress-fill" style="width:0%;background:#378ADD"></div></div>0%</div></td>
+                <td>60h</td><td>0h</td><td><div class="avatar" style="width:20px;height:20px;font-size:9px">近江</div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="project-detail" class="screen">
+      <div class="topbar">
+        <div style="font-size:12px;color:var(--color-text-tertiary)">プロジェクト一覧 /</div>
+        <div class="topbar-title">コーポレートサイト制作 — 株式会社〇〇</div>
+        <span class="badge badge-wip">進行中</span>
+        <button class="btn btn-ai" style="font-size:12px;margin-left:8px">✦ AIタスク分解</button>
+        <button class="btn btn-primary" style="font-size:12px;margin-left:6px">+ タスク追加</button>
+      </div>
+      <div class="content">
+        <div class="metric-grid" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+          <div class="metric"><div class="metric-label">納期</div><div class="metric-val" style="font-size:16px;color:#791F1F">4月10日</div><div class="metric-sub">残り3日</div></div>
+          <div class="metric"><div class="metric-label">タスク進捗</div><div class="metric-val">78%</div><div class="metric-sub">18/23 完了</div></div>
+          <div class="metric"><div class="metric-label">見積工数</div><div class="metric-val">40h</div><div class="metric-sub">実績 47h</div></div>
+          <div class="metric"><div class="metric-label">担当メンバー</div><div class="metric-val" style="font-size:15px">3名</div><div class="metric-sub">近江・田中・佐藤</div></div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+              <span class="tag">すべて</span><span class="tag" style="background:#FAEEDA;color:#633806;border-color:#FAC775">進行中 (5)</span><span class="tag">未着手 (4)</span><span class="tag">レビュー待ち (2)</span><span class="tag">完了 (12)</span>
+            </div>
+            <div class="card" style="padding:0">
+              <table class="table">
+                <thead><tr><th style="width:40%">タスク名</th><th>種別</th><th>担当</th><th>期日</th><th>見積</th><th>ステータス</th></tr></thead>
+                <tbody>
+                  <tr><td>トップページ コーディング</td><td><span class="tag">コーディング</span></td><td><div class="avatar" style="width:18px;height:18px;font-size:9px">近江</div></td><td style="color:#791F1F">4/8</td><td>8h</td><td><span class="badge badge-wip">進行中</span></td></tr>
+                  <tr><td>SP対応 レスポンシブ</td><td><span class="tag">コーディング</span></td><td><div class="avatar" style="width:18px;height:18px;font-size:9px">近江</div></td><td>4/9</td><td>4h</td><td><span class="badge badge-todo">未着手</span></td></tr>
+                  <tr><td>ブラウザテスト</td><td><span class="tag">テスト</span></td><td><div class="avatar" style="width:18px;height:18px;font-size:9px">田中</div></td><td>4/9</td><td>3h</td><td><span class="badge badge-todo">未着手</span></td></tr>
+                  <tr><td>デザインカンプ 最終確認</td><td><span class="tag">デザイン</span></td><td><div class="avatar" style="width:18px;height:18px;font-size:9px">佐藤</div></td><td>4/7</td><td>2h</td><td><span class="badge badge-review">レビュー待ち</span></td></tr>
+                  <tr><td>ワイヤーフレーム確認</td><td><span class="tag">その他</span></td><td><div class="avatar" style="width:18px;height:18px;font-size:9px">近江</div></td><td>4/1</td><td>1h</td><td><span class="badge badge-done">完了</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-head"><h2>チェックリスト — 納品フェーズ</h2></div>
+            <div class="card">
+              <div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:10px">テンプレート：納品前チェック</div>
+              <div class="task-row"><div class="check done"></div><div class="task-name done">全ページ文言最終確認</div></div>
+              <div class="task-row"><div class="check done"></div><div class="task-name done">OGP / meta設定</div></div>
+              <div class="task-row"><div class="check done"></div><div class="task-name done">Google Analytics 設置</div></div>
+              <div class="task-row"><div class="check"></div><div class="task-name">表示速度計測（PageSpeed 80+）</div></div>
+              <div class="task-row"><div class="check"></div><div class="task-name">クロスブラウザテスト</div></div>
+              <div class="task-row"><div class="check"></div><div class="task-name">本番環境デプロイ・動作確認</div></div>
+              <div class="task-row"><div class="check"></div><div class="task-name">クライアントへの納品連絡</div></div>
+              <div style="margin-top:10px">
+                <div class="progress-bar" style="height:6px"><div class="progress-fill" style="width:43%;background:#1D9E75"></div></div>
+                <div style="font-size:11px;color:var(--color-text-tertiary);margin-top:4px">3 / 7 完了</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mypage" class="screen">
+      <div class="topbar">
+        <div class="topbar-title">マイページ — 近江 裕人</div>
+        <button class="btn btn-primary" style="font-size:12px">+ 個人タスク追加</button>
+      </div>
+      <div class="content">
+        <div class="ai-panel">
+          <div class="ai-title">✦ 今日のAI提案</div>
+          <div class="ai-item">優先度: 「LP実装 - ヒーローsection」は期日明日。先に着手してください。</div>
+          <div class="ai-item">「ブラウザテスト」は30分で完了できます。午後の隙間に入れるのがおすすめです。</div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <div class="section-head"><h2>今日のタスク</h2><span style="font-size:11px;color:var(--color-text-tertiary)">4月7日（月）</span></div>
+            <div class="card">
+              <div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:8px;font-weight:500">案件タスク</div>
+              <div class="task-row">
+                <div class="check"></div>
+                <div style="flex:1">
+                  <div class="task-name">LP実装 - ヒーローsection</div>
+                  <div style="font-size:11px;color:var(--color-text-tertiary)">□□クリニック LP</div>
+                </div>
+                <span class="badge badge-high" style="font-size:10px">高</span>
+                <span style="font-size:11px;color:var(--color-text-tertiary)">3h</span>
+              </div>
+              <div class="task-row">
+                <div class="check"></div>
+                <div style="flex:1">
+                  <div class="task-name">SP対応 レスポンシブ</div>
+                  <div style="font-size:11px;color:var(--color-text-tertiary)">コーポレートサイト制作</div>
+                </div>
+                <span class="badge badge-high" style="font-size:10px">高</span>
+                <span style="font-size:11px;color:var(--color-text-tertiary)">4h</span>
+              </div>
+              <div style="border-top:0.5px solid var(--color-border-tertiary);margin:10px 0 8px;padding-top:8px;font-size:11px;color:var(--color-text-tertiary);font-weight:500">個人タスク</div>
+              <div class="task-row">
+                <div class="check done"></div>
+                <div class="task-name done">朝会の議事録まとめ</div>
+                <span class="badge badge-done" style="font-size:10px">完了</span>
+              </div>
+              <div class="task-row">
+                <div class="check"></div>
+                <div class="task-name">Next.js 15 アップグレード調査</div>
+                <span class="badge badge-mid" style="font-size:10px">中</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-head"><h2>今週の工数サマリー</h2></div>
+            <div class="card">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+                <div class="metric"><div class="metric-label">実績</div><div class="metric-val" style="font-size:18px">18.5h</div></div>
+                <div class="metric"><div class="metric-label">見積合計</div><div class="metric-val" style="font-size:18px">24h</div></div>
+              </div>
+              <div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:6px;font-weight:500">案件別内訳</div>
+              <div style="font-size:12px;display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)"><span>コーポレートサイト</span><span style="color:var(--color-text-secondary)">10h</span></div>
+              <div style="font-size:12px;display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)"><span>□□クリニック LP</span><span style="color:var(--color-text-secondary)">6h</span></div>
+              <div style="font-size:12px;display:flex;justify-content:space-between;padding:5px 0"><span>個人タスク</span><span style="color:var(--color-text-secondary)">2.5h</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="report" class="screen">
+      <div class="topbar">
+        <div class="topbar-title">工数レポート</div>
+        <select style="font-size:12px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)">
+          <option>2026年 4月</option><option>2026年 3月</option>
+        </select>
+      </div>
+      <div class="content">
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-label">月間合計工数</div><div class="metric-val">187h</div><div class="metric-sub">チーム全体</div></div>
+          <div class="metric"><div class="metric-label">見積もり合計</div><div class="metric-val">210h</div><div class="metric-sub">超過率 11%</div></div>
+          <div class="metric"><div class="metric-label">完了プロジェクト</div><div class="metric-val">3</div><div class="metric-sub">今月</div></div>
+          <div class="metric"><div class="metric-label">工数超過案件</div><div class="metric-val" style="color:#791F1F">2</div><div class="metric-sub">要確認</div></div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <div class="section-head"><h2>メンバー別工数</h2></div>
+            <div class="card" style="padding:0">
+              <table class="table">
+                <thead><tr><th>メンバー</th><th>実績工数</th><th>見積工数</th><th>差分</th><th>完了タスク</th></tr></thead>
+                <tbody>
+                  <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">近江</div>近江 裕人</div></td><td>52h</td><td>60h</td><td style="color:#27500A">-8h</td><td>14</td></tr>
+                  <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="background:#E1F5EE;color:#085041">田中</div>田中 誠</div></td><td>48h</td><td>40h</td><td style="color:#791F1F">+8h</td><td>11</td></tr>
+                  <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="background:#FBEAF0;color:#72243E">佐藤</div>佐藤 花</div></td><td>41h</td><td>45h</td><td style="color:#27500A">-4h</td><td>9</td></tr>
+                  <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="background:#FAEEDA;color:#633806">山本</div>山本 健</div></td><td>46h</td><td>40h</td><td style="color:#791F1F">+6h</td><td>10</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="section-head"><h2>案件別工数</h2></div>
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+                <div><div style="font-size:12px;font-weight:500">コーポレートサイト</div><div style="font-size:11px;color:var(--color-text-tertiary)">株式会社〇〇</div></div>
+                <div style="text-align:right"><div style="font-size:12px">47h <span style="color:#791F1F">/ 40h</span></div><div class="progress-bar" style="width:80px;margin-top:4px"><div class="progress-fill" style="width:100%;background:#E24B4A"></div></div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+                <div><div style="font-size:12px;font-weight:500">ECサイト リニューアル</div><div style="font-size:11px;color:var(--color-text-tertiary)">△△株式会社</div></div>
+                <div style="text-align:right"><div style="font-size:12px">36h <span style="color:var(--color-text-tertiary)">/ 80h</span></div><div class="progress-bar" style="width:80px;margin-top:4px"><div class="progress-fill" style="width:45%;background:#1D9E75"></div></div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0">
+                <div><div style="font-size:12px;font-weight:500">□□クリニック LP</div><div style="font-size:11px;color:var(--color-text-tertiary)">□□クリニック</div></div>
+                <div style="text-align:right"><div style="font-size:12px">6h <span style="color:var(--color-text-tertiary)">/ 30h</span></div><div class="progress-bar" style="width:80px;margin-top:4px"><div class="progress-fill" style="width:20%;background:#378ADD"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (el) el.classList.add('active');
+}
+</script>
