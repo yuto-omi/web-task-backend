@@ -5,12 +5,14 @@ namespace App\Modules\Project\Models;
 use App\Modules\Task\Models\Task;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -18,20 +20,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $name
  * @property string|null $client_name
  * @property string $status
- * @property \Illuminate\Support\Carbon|null $start_date
- * @property \Illuminate\Support\Carbon|null $deadline
+ * @property Carbon|null $start_date
+ * @property Carbon|null $deadline
  * @property numeric|null $estimated_hours
  * @property string|null $memo
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property-read User $creator
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $members
+ * @property-read Collection<int, User> $members
  * @property-read int|null $members_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Modules\Project\Models\ProjectPhase> $phases
+ * @property-read Collection<int, ProjectPhase> $phases
  * @property-read int|null $phases_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Task> $tasks
+ * @property-read Collection<int, Task> $tasks
  * @property-read int|null $tasks_count
+ *
  * @method static Builder<static>|Project forUser(int $userId)
  * @method static Builder<static>|Project inProgress()
  * @method static Builder<static>|Project newModelQuery()
@@ -52,6 +55,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder<static>|Project whereUpdatedAt($value)
  * @method static Builder<static>|Project withTrashed(bool $withTrashed = true)
  * @method static Builder<static>|Project withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Project extends Model
@@ -73,8 +77,8 @@ class Project extends Model
     protected function casts(): array
     {
         return [
-            'start_date'      => 'date',
-            'deadline'        => 'date',
+            'start_date' => 'date',
+            'deadline' => 'date',
             'estimated_hours' => 'decimal:1',
         ];
     }

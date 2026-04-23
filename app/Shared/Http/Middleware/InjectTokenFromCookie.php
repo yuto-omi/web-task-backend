@@ -18,7 +18,7 @@ class InjectTokenFromCookie
         if (! $request->bearerToken() && $request->hasCookie('auth_token')) {
             $request->headers->set(
                 'Authorization',
-                'Bearer ' . $request->cookie('auth_token')
+                'Bearer '.$request->cookie('auth_token')
             );
         }
 

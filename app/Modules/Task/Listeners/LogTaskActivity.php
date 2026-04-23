@@ -13,9 +13,9 @@ class LogTaskActivity
     public function handle(TaskCreated|TaskUpdated|TaskDeleted|TaskStatusChanged $event): void
     {
         $context = match (true) {
-            $event instanceof TaskCreated       => ['event' => 'task.created',        'task_id' => $event->task->id, 'project_id' => $event->task->project_id],
-            $event instanceof TaskUpdated       => ['event' => 'task.updated',        'task_id' => $event->task->id, 'project_id' => $event->task->project_id],
-            $event instanceof TaskDeleted       => ['event' => 'task.deleted',        'task_id' => $event->task->id, 'project_id' => $event->task->project_id],
+            $event instanceof TaskCreated => ['event' => 'task.created',        'task_id' => $event->task->id, 'project_id' => $event->task->project_id],
+            $event instanceof TaskUpdated => ['event' => 'task.updated',        'task_id' => $event->task->id, 'project_id' => $event->task->project_id],
+            $event instanceof TaskDeleted => ['event' => 'task.deleted',        'task_id' => $event->task->id, 'project_id' => $event->task->project_id],
             $event instanceof TaskStatusChanged => ['event' => 'task.status_changed', 'task_id' => $event->task->id, 'from' => $event->oldStatus, 'to' => $event->newStatus],
         };
 

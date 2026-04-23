@@ -21,14 +21,14 @@ class ProjectPhaseEntity
     public function toArray(): array
     {
         return [
-            'name'            => $this->name,
-            'status'          => $this->status->value(),
-            'assignee_id'     => $this->assigneeId,
-            'start_date'      => $this->startDate,
-            'end_date'        => $this->endDate,
+            'name' => $this->name,
+            'status' => $this->status->value(),
+            'assignee_id' => $this->assigneeId,
+            'start_date' => $this->startDate,
+            'end_date' => $this->endDate,
             'estimated_hours' => $this->estimatedHours,
-            'sort_order'      => $this->sortOrder,
-            'progress_rate'   => $this->progressRate,
+            'sort_order' => $this->sortOrder,
+            'progress_rate' => $this->progressRate,
         ];
     }
 }

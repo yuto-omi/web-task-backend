@@ -11,8 +11,8 @@
 |
 */
 
-pest()->extend(Tests\TestCase::class)
-    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class)
     ->in('Feature', 'Unit');
 
 /*
@@ -42,9 +42,11 @@ expect()->extend('toBeOne', function () {
 */
 
 use App\Modules\User\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
+use Tests\TestCase;
 
 /**
  * @param  array<int, string>  $permissions

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\File;
+use Symfony\Component\Finder\SplFileInfo;
 
 it('does not use dd/dump/ray in production code', function () {
     $paths = [
@@ -15,7 +16,7 @@ it('does not use dd/dump/ray in production code', function () {
     ];
 
     foreach ($paths as $path) {
-        /** @var \Symfony\Component\Finder\SplFileInfo $file */
+        /** @var SplFileInfo $file */
         foreach (File::allFiles($path) as $file) {
             if ($file->getExtension() !== 'php') {
                 continue;
@@ -40,7 +41,7 @@ it('does not use DB facade in module Controllers or UseCases', function () {
         '/\bDB::/',
     ];
 
-    /** @var \Symfony\Component\Finder\SplFileInfo $file */
+    /** @var SplFileInfo $file */
     foreach (File::allFiles($paths[0]) as $file) {
         if ($file->getExtension() !== 'php') {
             continue;
@@ -67,7 +68,7 @@ it('does not use DB facade in module Controllers or UseCases', function () {
 it('keeps UseCases independent from Http layer', function () {
     $useCasesPath = app_path('Modules');
 
-    /** @var \Symfony\Component\Finder\SplFileInfo $file */
+    /** @var SplFileInfo $file */
     foreach (File::allFiles($useCasesPath) as $file) {
         if ($file->getExtension() !== 'php') {
             continue;

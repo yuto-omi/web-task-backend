@@ -14,7 +14,7 @@ class SortTasksRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ids'   => ['required', 'array'],
+            'ids' => ['required', 'array'],
             'ids.*' => ['integer', 'exists:tasks,id'],
         ];
     }

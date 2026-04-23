@@ -1,8 +1,13 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use App\Providers\AuthServiceProvider;
+use App\Providers\EventServiceProvider;
+use App\Providers\ModuleDiscoveryServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\ModuleDiscoveryServiceProvider::class,
-    App\Providers\AuthServiceProvider::class,
-    App\Providers\EventServiceProvider::class,
+    AppServiceProvider::class,
+    ModuleDiscoveryServiceProvider::class,
+    AuthServiceProvider::class,
+    EventServiceProvider::class,
 ];

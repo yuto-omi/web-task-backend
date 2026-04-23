@@ -19,14 +19,13 @@ use App\Modules\Task\UseCases\UpdateTask;
 use App\Modules\Task\UseCases\UpdateTaskStatus;
 use App\Modules\Task\ValueObjects\TaskStatus;
 use App\Shared\Http\ApiResponse;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class TaskController
 {
-
     use AuthorizesRequests;
 
     /**

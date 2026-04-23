@@ -15,7 +15,7 @@ class UpdatePhaseDTO
     ) {}
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public static function fromArray(array $data): self
     {
@@ -34,13 +34,13 @@ class UpdatePhaseDTO
     public function toArray(): array
     {
         return array_filter([
-            'name'            => $this->name,
-            'assignee_id'     => $this->assigneeId,
-            'start_date'      => $this->startDate,
-            'end_date'        => $this->endDate,
+            'name' => $this->name,
+            'assignee_id' => $this->assigneeId,
+            'start_date' => $this->startDate,
+            'end_date' => $this->endDate,
             'estimated_hours' => $this->estimatedHours,
-            'sort_order'      => $this->sortOrder,
-            'progress_rate'   => $this->progressRate,
+            'sort_order' => $this->sortOrder,
+            'progress_rate' => $this->progressRate,
         ], fn ($v) => $v !== null);
     }
 }
