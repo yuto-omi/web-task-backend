@@ -12,6 +12,48 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property int $created_by
+ * @property string $name
+ * @property string|null $client_name
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $start_date
+ * @property \Illuminate\Support\Carbon|null $deadline
+ * @property numeric|null $estimated_hours
+ * @property string|null $memo
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read User $creator
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $members
+ * @property-read int|null $members_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Modules\Project\Models\ProjectPhase> $phases
+ * @property-read int|null $phases_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Task> $tasks
+ * @property-read int|null $tasks_count
+ * @method static Builder<static>|Project forUser(int $userId)
+ * @method static Builder<static>|Project inProgress()
+ * @method static Builder<static>|Project newModelQuery()
+ * @method static Builder<static>|Project newQuery()
+ * @method static Builder<static>|Project onlyTrashed()
+ * @method static Builder<static>|Project query()
+ * @method static Builder<static>|Project whereClientName($value)
+ * @method static Builder<static>|Project whereCreatedAt($value)
+ * @method static Builder<static>|Project whereCreatedBy($value)
+ * @method static Builder<static>|Project whereDeadline($value)
+ * @method static Builder<static>|Project whereDeletedAt($value)
+ * @method static Builder<static>|Project whereEstimatedHours($value)
+ * @method static Builder<static>|Project whereId($value)
+ * @method static Builder<static>|Project whereMemo($value)
+ * @method static Builder<static>|Project whereName($value)
+ * @method static Builder<static>|Project whereStartDate($value)
+ * @method static Builder<static>|Project whereStatus($value)
+ * @method static Builder<static>|Project whereUpdatedAt($value)
+ * @method static Builder<static>|Project withTrashed(bool $withTrashed = true)
+ * @method static Builder<static>|Project withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Project extends Model
 {
     use HasFactory;

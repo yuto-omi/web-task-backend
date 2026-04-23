@@ -11,6 +11,44 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property int $project_id
+ * @property int|null $assignee_id
+ * @property string $name
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $start_date
+ * @property \Illuminate\Support\Carbon|null $end_date
+ * @property numeric|null $estimated_hours
+ * @property int $sort_order
+ * @property int|null $progress_rate
+ * @property string|null $created_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read User|null $assignee
+ * @property-read \App\Modules\Project\Models\Project|null $project
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Task> $tasks
+ * @property-read int|null $tasks_count
+ * @method static Builder<static>|ProjectPhase inProgress()
+ * @method static Builder<static>|ProjectPhase newModelQuery()
+ * @method static Builder<static>|ProjectPhase newQuery()
+ * @method static Builder<static>|ProjectPhase onlyTrashed()
+ * @method static Builder<static>|ProjectPhase query()
+ * @method static Builder<static>|ProjectPhase whereAssigneeId($value)
+ * @method static Builder<static>|ProjectPhase whereCreatedAt($value)
+ * @method static Builder<static>|ProjectPhase whereDeletedAt($value)
+ * @method static Builder<static>|ProjectPhase whereEndDate($value)
+ * @method static Builder<static>|ProjectPhase whereEstimatedHours($value)
+ * @method static Builder<static>|ProjectPhase whereId($value)
+ * @method static Builder<static>|ProjectPhase whereName($value)
+ * @method static Builder<static>|ProjectPhase whereProgressRate($value)
+ * @method static Builder<static>|ProjectPhase whereProjectId($value)
+ * @method static Builder<static>|ProjectPhase whereSortOrder($value)
+ * @method static Builder<static>|ProjectPhase whereStartDate($value)
+ * @method static Builder<static>|ProjectPhase whereStatus($value)
+ * @method static Builder<static>|ProjectPhase withTrashed(bool $withTrashed = true)
+ * @method static Builder<static>|ProjectPhase withoutTrashed()
+ * @mixin \Eloquent
+ */
 class ProjectPhase extends Model
 {
     use HasFactory;
