@@ -6,6 +6,7 @@ use App\Modules\Project\Models\Project;
 use App\Modules\Project\Models\ProjectPhase;
 use App\Modules\Task\Models\Task;
 use App\Modules\User\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 
 class ProjectSeeder extends Seeder
@@ -19,13 +20,13 @@ class ProjectSeeder extends Seeder
         // プロジェクト1: 進行中
         // ----------------
         $project1 = Project::create([
-            'created_by'       => $admin->id,
-            'name'             => '株式会社サンプル コーポレートサイトリニューアル',
-            'client_name'      => '株式会社サンプル',
-            'status'           => 'in_progress',
-            'start_date'       => '2026-03-01',
-            'deadline'         => '2026-05-31',
-            'estimated_hours'  => 120.0,
+            'created_by' => $admin->id,
+            'name' => '株式会社サンプル コーポレートサイトリニューアル',
+            'client_name' => '株式会社サンプル',
+            'status' => 'in_progress',
+            'start_date' => '2026-03-01',
+            'deadline' => '2026-05-31',
+            'estimated_hours' => 120.0,
         ]);
 
         $project1->members()->attach($users->take(3)->pluck('id'));
@@ -41,7 +42,7 @@ class ProjectSeeder extends Seeder
 
         foreach ($phases1 as $phaseData) {
             $phase = ProjectPhase::create([
-                'project_id'  => $project1->id,
+                'project_id' => $project1->id,
                 'assignee_id' => $users->random()->id,
                 ...$phaseData,
             ]);
@@ -54,13 +55,13 @@ class ProjectSeeder extends Seeder
         // プロジェクト2: 未着手
         // ----------------
         $project2 = Project::create([
-            'created_by'       => $admin->id,
-            'name'             => '株式会社テック ECサイト構築',
-            'client_name'      => '株式会社テック',
-            'status'           => 'not_started',
-            'start_date'       => '2026-05-01',
-            'deadline'         => '2026-08-31',
-            'estimated_hours'  => 200.0,
+            'created_by' => $admin->id,
+            'name' => '株式会社テック ECサイト構築',
+            'client_name' => '株式会社テック',
+            'status' => 'not_started',
+            'start_date' => '2026-05-01',
+            'deadline' => '2026-08-31',
+            'estimated_hours' => 200.0,
         ]);
 
         $project2->members()->attach($users->take(4)->pluck('id'));
@@ -74,7 +75,7 @@ class ProjectSeeder extends Seeder
 
         foreach ($phases2 as $phaseData) {
             $phase = ProjectPhase::create([
-                'project_id'  => $project2->id,
+                'project_id' => $project2->id,
                 'assignee_id' => $users->random()->id,
                 ...$phaseData,
             ]);
@@ -86,13 +87,13 @@ class ProjectSeeder extends Seeder
         // プロジェクト3: 完了（アーカイブ）
         // ----------------
         $project3 = Project::create([
-            'created_by'       => $admin->id,
-            'name'             => '合同会社デザイン ランディングページ制作',
-            'client_name'      => '合同会社デザイン',
-            'status'           => 'completed',
-            'start_date'       => '2026-01-10',
-            'deadline'         => '2026-02-28',
-            'estimated_hours'  => 40.0,
+            'created_by' => $admin->id,
+            'name' => '合同会社デザイン ランディングページ制作',
+            'client_name' => '合同会社デザイン',
+            'status' => 'completed',
+            'start_date' => '2026-01-10',
+            'deadline' => '2026-02-28',
+            'estimated_hours' => 40.0,
         ]);
 
         $project3->members()->attach($users->take(2)->pluck('id'));
@@ -110,9 +111,9 @@ class ProjectSeeder extends Seeder
 
         foreach ($personalTasks as $taskData) {
             Task::create([
-                'project_id'  => null,
+                'project_id' => null,
                 'assignee_id' => $admin->id,
-                'created_by'  => $admin->id,
+                'created_by' => $admin->id,
                 ...$taskData,
             ]);
         }
@@ -121,7 +122,7 @@ class ProjectSeeder extends Seeder
     /**
      * フェーズに紐づくタスクを作成する
      *
-     * @param \Illuminate\Database\Eloquent\Collection<int, User> $users
+     * @param  Collection<int, User>  $users
      */
     private function createPhaseTasks(Project $project, ProjectPhase $phase, $users): void
     {
@@ -139,15 +140,15 @@ class ProjectSeeder extends Seeder
 
         foreach ($titles as $i => $title) {
             Task::create([
-                'project_id'      => $project->id,
-                'phase_id'        => $phase->id,
-                'assignee_id'     => $users->random()->id,
-                'created_by'      => $users->first()->id,
-                'title'           => $title,
-                'status'          => $phase->status === 'completed' ? 'done' : 'pending',
-                'priority'        => ['low', 'medium', 'high'][array_rand(['low', 'medium', 'high'])],
+                'project_id' => $project->id,
+                'phase_id' => $phase->id,
+                'assignee_id' => $users->random()->id,
+                'created_by' => $users->first()->id,
+                'title' => $title,
+                'status' => $phase->status === 'completed' ? 'done' : 'pending',
+                'priority' => ['low', 'medium', 'high'][array_rand(['low', 'medium', 'high'])],
                 'estimated_hours' => [1.0, 2.0, 3.0, 4.0][array_rand([1.0, 2.0, 3.0, 4.0])],
-                'sort_order'      => $i + 1,
+                'sort_order' => $i + 1,
             ]);
         }
     }

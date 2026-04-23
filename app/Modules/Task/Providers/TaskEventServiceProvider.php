@@ -13,9 +13,9 @@ class TaskEventServiceProvider extends ServiceProvider
 {
     /** @var array<class-string, list<class-string>> */
     protected $listen = [
-        TaskCreated::class       => [LogTaskActivity::class],
-        TaskUpdated::class       => [LogTaskActivity::class],
-        TaskDeleted::class       => [LogTaskActivity::class],
+        TaskCreated::class => [LogTaskActivity::class],
+        TaskUpdated::class => [LogTaskActivity::class],
+        TaskDeleted::class => [LogTaskActivity::class],
         TaskStatusChanged::class => [LogTaskActivity::class],
     ];
 }

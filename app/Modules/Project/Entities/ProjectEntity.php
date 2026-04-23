@@ -19,11 +19,11 @@ class ProjectEntity
     public function toArray(): array
     {
         return [
-            'name'            => $this->name,
-            'client_name'     => $this->clientName,
-            'status'          => $this->status->value(),
-            'start_date'      => $this->startDate,
-            'deadline'        => $this->deadline,
+            'name' => $this->name,
+            'client_name' => $this->clientName,
+            'status' => $this->status->value(),
+            'start_date' => $this->startDate,
+            'deadline' => $this->deadline,
             'estimated_hours' => $this->estimatedHours,
         ];
     }

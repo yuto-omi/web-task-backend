@@ -4,11 +4,13 @@ namespace App\Modules\Task\Models;
 
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -22,17 +24,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $status
  * @property string|null $priority
  * @property string|null $type_tag
- * @property \Illuminate\Support\Carbon|null $due_date
+ * @property Carbon|null $due_date
  * @property numeric|null $estimated_hours
  * @property int $sort_order
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property-read User $assignee
  * @property-read User $creator
  * @property-read Task|null $parentTask
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Task> $subTasks
+ * @property-read Collection<int, Task> $subTasks
  * @property-read int|null $sub_tasks_count
+ *
  * @method static Builder<static>|Task assignedTo(int $userId)
  * @method static Builder<static>|Task dueToday()
  * @method static Builder<static>|Task incomplete()
@@ -60,6 +63,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder<static>|Task whereUpdatedAt($value)
  * @method static Builder<static>|Task withTrashed(bool $withTrashed = true)
  * @method static Builder<static>|Task withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Task extends Model
@@ -86,9 +90,9 @@ class Task extends Model
     protected function casts(): array
     {
         return [
-            'due_date'         => 'date',
-            'estimated_hours'  => 'decimal:1',
-            'sort_order'       => 'integer',
+            'due_date' => 'date',
+            'estimated_hours' => 'decimal:1',
+            'sort_order' => 'integer',
         ];
     }
 

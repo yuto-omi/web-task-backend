@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 interface TaskRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return Collection<int, Task>
      */
     public function list(array $filters): Collection;

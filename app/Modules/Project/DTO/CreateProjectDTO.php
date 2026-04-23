@@ -5,7 +5,7 @@ namespace App\Modules\Project\DTO;
 class CreateProjectDTO
 {
     /**
-     * @param array<int> $memberIds
+     * @param  array<int>  $memberIds
      */
     public function __construct(
         public readonly string $name,
@@ -18,7 +18,7 @@ class CreateProjectDTO
     ) {}
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public static function fromArray(array $data): self
     {

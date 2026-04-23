@@ -8,7 +8,7 @@ class UpdateProjectDTO
     private array $providedKeys = [];
 
     /**
-     * @param array<int>|null $memberIds
+     * @param  array<int>|null  $memberIds
      */
     public function __construct(
         public readonly ?string $name,
@@ -21,7 +21,7 @@ class UpdateProjectDTO
     ) {}
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public static function fromArray(array $data): self
     {
@@ -45,12 +45,12 @@ class UpdateProjectDTO
     public function toArray(): array
     {
         $all = [
-            'name'            => $this->name,
-            'client_name'     => $this->clientName,
-            'start_date'      => $this->startDate,
-            'deadline'        => $this->deadline,
+            'name' => $this->name,
+            'client_name' => $this->clientName,
+            'start_date' => $this->startDate,
+            'deadline' => $this->deadline,
             'estimated_hours' => $this->estimatedHours,
-            'memo'            => $this->memo,
+            'memo' => $this->memo,
         ];
 
         // リクエストで送信されたキーのみ更新対象とする
