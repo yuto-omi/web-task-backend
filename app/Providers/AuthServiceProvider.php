@@ -4,13 +4,11 @@ namespace App\Providers;
 
 use App\Modules\News\Models\News;
 use App\Modules\News\Policies\NewsPolicy;
-use App\Modules\Task\Policies\TaskPolicy;
-use App\Modules\Task\Models\Task;
 use App\Modules\NewsCategory\Models\NewsCategory;
 use App\Modules\NewsCategory\Policies\NewsCategoryPolicy;
+use App\Modules\Task\Models\Task;
+use App\Modules\Task\Policies\TaskPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-
-use function Symfony\Component\Translation\t;
 
 class AuthServiceProvider extends ServiceProvider
 {

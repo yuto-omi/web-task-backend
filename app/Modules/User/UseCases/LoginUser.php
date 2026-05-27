@@ -4,13 +4,14 @@ namespace App\Modules\User\UseCases;
 
 use App\Modules\User\DTO\LoginDTO;
 use App\Modules\User\Events\UserLoggedIn;
+use App\Modules\User\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Tymon\JWTAuth\JWTGuard;
 
 class LoginUser
 {
     /**
-     * @return array{access_token: string, token_type: string, expires_in: int, user: \App\Modules\User\Models\User}
+     * @return array{access_token: string, token_type: string, expires_in: int, user: User}
      */
     public function handle(LoginDTO $data): array
     {

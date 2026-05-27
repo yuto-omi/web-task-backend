@@ -26,16 +26,16 @@ class TaskEntity
     public function toArray(): array
     {
         return [
-            'assignee_id'     => $this->assigneeId,
-            'title'           => $this->title,
-            'project_id'      => $this->projectId,
-            'phase_id'        => $this->phaseId,
-            'parent_task_id'  => $this->parentTaskId,
-            'memo'            => $this->memo,
-            'status'          => $this->status->value(),
-            'priority'        => $this->priority?->value(),
-            'type_tag'        => $this->typeTag,
-            'due_date'        => $this->dueDate,
+            'assignee_id' => $this->assigneeId,
+            'title' => $this->title,
+            'project_id' => $this->projectId,
+            'phase_id' => $this->phaseId,
+            'parent_task_id' => $this->parentTaskId,
+            'memo' => $this->memo,
+            'status' => $this->status->value(),
+            'priority' => $this->priority?->value(),
+            'type_tag' => $this->typeTag,
+            'due_date' => $this->dueDate,
             'estimated_hours' => $this->estimatedHours,
             // null のときはDBのデフォルト値（0）を使う
             ...($this->sortOrder !== null ? ['sort_order' => $this->sortOrder] : []),

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 class EloquentTaskRepository implements TaskRepository
 {
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return Collection<int, Task>
      */
     public function list(array $filters): Collection

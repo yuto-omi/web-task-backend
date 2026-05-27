@@ -22,7 +22,7 @@ class UpdateTaskDTO
     ) {}
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public static function fromArray(array $data): self
     {
@@ -50,17 +50,17 @@ class UpdateTaskDTO
     public function toArray(): array
     {
         $all = [
-            'assignee_id'     => $this->assigneeId,
-            'title'           => $this->title,
-            'phase_id'        => $this->phaseId,
-            'parent_task_id'  => $this->parentTaskId,
-            'memo'            => $this->memo,
-            'status'          => $this->status,
-            'priority'        => $this->priority,
-            'type_tag'        => $this->typeTag,
-            'due_date'        => $this->dueDate,
+            'assignee_id' => $this->assigneeId,
+            'title' => $this->title,
+            'phase_id' => $this->phaseId,
+            'parent_task_id' => $this->parentTaskId,
+            'memo' => $this->memo,
+            'status' => $this->status,
+            'priority' => $this->priority,
+            'type_tag' => $this->typeTag,
+            'due_date' => $this->dueDate,
             'estimated_hours' => $this->estimatedHours,
-            'sort_order'      => $this->sortOrder,
+            'sort_order' => $this->sortOrder,
         ];
 
         // リクエストで送信されたキーのみ更新対象とする
